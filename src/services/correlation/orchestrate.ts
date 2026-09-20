@@ -156,6 +156,8 @@ export async function correlateIncidentEvidence(
       durationMs: result.durationMs,
       textLength: result.textLength,
       analysis: result.analysis,
+      provider: result.provider,
+      providerMode: result.providerMode,
     };
   }
 ): Promise<IncidentCorrelationMeta> {

@@ -6,7 +6,11 @@ import {
   type CorrelateEvidenceBatchItemInput as ProviderBatchItemInput,
   type CorrelateEvidenceTextResultWithProvider,
 } from "@/services/providers/correlate";
-import type { CorrelationAnalysis } from "@/types";
+import type {
+  CorrelationAnalysis,
+  CorrelationProviderMode,
+  CorrelationProviderName,
+} from "@/types";
 
 export { CorrelationServiceError } from "./error";
 
@@ -55,6 +59,8 @@ export interface CorrelateEvidenceTextResult {
   durationMs: number;
   textLength: number;
   analysis: CorrelationAnalysis;
+  provider: CorrelationProviderName;
+  providerMode: CorrelationProviderMode;
 }
 
 export function assertCorrelationConfigured(): void {
@@ -133,5 +139,7 @@ export async function correlateEvidenceBatch(
     durationMs: result.durationMs,
     textLength: result.textLength,
     analysis: result.analysis,
+    provider: result.provider,
+    providerMode: result.providerMode,
   };
 }

@@ -745,6 +745,25 @@ export function canonicalizeIncidentCorrelation(value: unknown): IncidentCorrela
     ? value.textLength
     : undefined;
 
+  const provider = optionalString(value.provider, "correlation.provider", 32);
+  if (
+    provider !== undefined &&
+    (provider === "bedrock" || provider === "openrouter" || provider === "local")
+  ) {
+    correlation.provider = provider;
+  }
+  const providerMode = optionalString(
+    value.providerMode,
+    "correlation.providerMode",
+    16
+  );
+  if (
+    providerMode !== undefined &&
+    (providerMode === "primary" || providerMode === "fallback")
+  ) {
+    correlation.providerMode = providerMode;
+  }
+
   if (status === "correlation_failed") {
     if (!isRecord(value.error)) {
       throw new PersistenceServiceError(

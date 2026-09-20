@@ -269,6 +269,8 @@ export async function POST(request: Request): Promise<Response> {
           durationMs: result.durationMs,
           textLength: result.textLength,
           analysis: result.analysis,
+          provider: result.provider,
+          providerMode: result.providerMode,
         },
       },
       200

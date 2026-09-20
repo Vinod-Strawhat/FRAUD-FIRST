@@ -23,13 +23,30 @@ export type BedrockFailureKind =
   | "network"
   | "unknown";
 
+/**
+ * Where a Bedrock failure was detected.
+ *
+ * - "aws": the failure was classified from an error returned by the AWS SDK
+ *   (Bedrock provider/service response).
+ * - "internal": the failure was detected locally by this adapter (invalid
+ *   local input, empty or malformed model output). These are application-side
+ *   conditions, not provider responses.
+ */
+export type BedrockErrorSource = "aws" | "internal";
+
 export class BedrockRuntimeError extends Error {
   readonly kind: BedrockFailureKind;
+  readonly source: BedrockErrorSource;
 
-  constructor(kind: BedrockFailureKind, message: string) {
+  constructor(
+    kind: BedrockFailureKind,
+    message: string,
+    source: BedrockErrorSource = "internal"
+  ) {
     super(message);
     this.name = "BedrockRuntimeError";
     this.kind = kind;
+    this.source = source;
   }
 }
 
@@ -97,14 +114,16 @@ function classifyError(error: unknown): BedrockRuntimeError {
   ) {
     return new BedrockRuntimeError(
       "model_unavailable",
-      "The configured model is not available for this request."
+      "The configured model is not available for this request.",
+      "aws"
     );
   }
 
   if (token.includes("AccessDenied") || token.includes("Unauthorized")) {
     return new BedrockRuntimeError(
       "access_denied",
-      "Access to the configured model was denied."
+      "Access to the configured model was denied.",
+      "aws"
     );
   }
 
@@ -115,7 +134,8 @@ function classifyError(error: unknown): BedrockRuntimeError {
   ) {
     return new BedrockRuntimeError(
       "throttled",
-      "The model request was throttled. Try again shortly."
+      "The model request was throttled. Try again shortly.",
+      "aws"
     );
   }
 
@@ -126,7 +146,8 @@ function classifyError(error: unknown): BedrockRuntimeError {
   ) {
     return new BedrockRuntimeError(
       "service_unavailable",
-      "The model service is temporarily unavailable."
+      "The model service is temporarily unavailable.",
+      "aws"
     );
   }
 
@@ -137,7 +158,8 @@ function classifyError(error: unknown): BedrockRuntimeError {
   ) {
     return new BedrockRuntimeError(
       "invalid_request",
-      "The model request was rejected."
+      "The model request was rejected.",
+      "aws"
     );
   }
 
@@ -147,10 +169,14 @@ function classifyError(error: unknown): BedrockRuntimeError {
     token.includes("Socket") ||
     token.includes("RequestTimeout")
   ) {
-    return new BedrockRuntimeError("network", "The model request timed out.");
+    return new BedrockRuntimeError(
+      "network",
+      "The model request timed out.",
+      "aws"
+    );
   }
 
-  return new BedrockRuntimeError("unknown", "The model request failed.");
+  return new BedrockRuntimeError("unknown", "The model request failed.", "aws");
 }
 
 function extractResponseText(output: ConverseCommandOutput): string {
@@ -171,7 +197,8 @@ export async function converseEvidence(
   if (!BEDROCK_MODEL_ID_RE.test(input.modelId)) {
     throw new BedrockRuntimeError(
       "invalid_request",
-      "The configured model id is invalid."
+      "The configured model id is invalid.",
+      "internal"
     );
   }
 
@@ -201,7 +228,8 @@ export async function converseEvidence(
   if (text.length === 0) {
     throw new BedrockRuntimeError(
       "service_unavailable",
-      "The model returned no output."
+      "The model returned no output.",
+      "internal"
     );
   }
 
@@ -209,7 +237,8 @@ export async function converseEvidence(
   if (stopReason && stopReason !== "end_turn" && stopReason !== "stop_sequence") {
     throw new BedrockRuntimeError(
       "invalid_request",
-      `The model stopped unexpectedly (${stopReason}).`
+      `The model stopped unexpectedly (${stopReason}).`,
+      "internal"
     );
   }
 

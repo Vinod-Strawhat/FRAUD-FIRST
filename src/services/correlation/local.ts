@@ -6,7 +6,6 @@ import type {
   IdentifierReference,
   MissingInformation,
   TimelineCandidate,
-  UncertainInformation,
 } from "@/types";
 
 export interface LocalCorrelateInput {
@@ -95,7 +94,6 @@ function extractUPIIds(text: string): Array<{ raw: string; value: string }> {
 function extractPhones(text: string): Array<{ raw: string; value: string }> {
   const results: Array<{ raw: string; value: string }> = [];
   const seen = new Set<string>();
-  const re = /(?:\+91[-\s]?)?(\d{10})|(?:\+91[-\s]?|91[-\s]?)(\d{10})|(?:\+91[-\s]?)(\d{10})/g;
   // Simpler: match 10-digit Indian mobile numbers
   const re2 = /(\+91[-\s]?\d{10}|91[-\s]?\d{10}|\d{10})/g;
   let m: RegExpExecArray | null;
@@ -159,10 +157,6 @@ function extractDates(text: string): Array<{ raw: string; value: string }> {
   }
 
   // "20 Sep 2026" format
-  const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December",
-  ];
   const monthShort = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
@@ -222,7 +216,7 @@ function extractURLs(text: string): Array<{ raw: string; value: string }> {
   const re = /https?:\/\/[^\s<>"{}|\\^`\[\]]+/gi;
   let m: RegExpExecArray | null;
   while ((m = re.exec(text)) !== null) {
-    let value = m[0].trim().replace(/[.,;:!?)]+$/, "");
+    const value = m[0].trim().replace(/[.,;:!?)]+$/, "");
     if (!seen.has(value.toLowerCase())) {
       seen.add(value.toLowerCase());
       results.push({ raw: m[0].trim(), value });

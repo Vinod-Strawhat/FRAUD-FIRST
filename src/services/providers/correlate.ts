@@ -1,16 +1,20 @@
 /**
  * Correlation provider selection with Bedrock → OpenRouter fallback.
  *
- * Attempts AWS Bedrock first. If Bedrock fails due to provider
- * unavailability (ValidationException/operation not allowed, not-configured,
- * access_denied), falls back to OpenRouter. Other errors (invalid output,
- * programming bugs) are NOT eligible for fallback.
+ * Attempts AWS Bedrock first. Bedrock errors that classify into a known
+ * provider/service failure (validation, access denied, model unavailable,
+ * throttling, service unavailability, network) are fallback-eligible, so the
+ * chain proceeds to OpenRouter and, as a last resort, the deterministic local
+ * engine. Application-side conditions (malformed local input, invalid model
+ * output) are NOT eligible and surface as a Bedrock request failure.
  */
 
 import {
   converseEvidence,
   configuredBedrockModelId,
   isBedrockConfigured,
+  BedrockRuntimeError,
+  type BedrockFailureKind,
 } from "@/services/server/bedrock";
 import {
   converseOpenRouter,
@@ -19,6 +23,7 @@ import {
 } from "@/services/server/openrouter";
 import { CorrelationServiceError } from "@/services/correlation/error";
 import { normalizeCorrelationOutput } from "@/services/correlation/schema";
+import { correlateLocally } from "@/services/correlation/local";
 import type {
   CorrelationProviderName,
   CorrelationProviderMode,
@@ -47,7 +52,28 @@ export interface CorrelateEvidenceTextResultWithProvider {
   providerMode: CorrelationProviderMode;
 }
 
+/**
+ * Bedrock failure kinds that mean the provider/service could not serve this
+ * request even though the application call itself was well-formed. These are
+ * the failures captured by classifyError() in the Bedrock adapter.
+ */
+const FALLBACK_ELIGIBLE_BEDROCK_KINDS: ReadonlySet<BedrockFailureKind> =
+  new Set([
+    "model_unavailable",
+    "access_denied",
+    "throttled",
+    "service_unavailable",
+    "invalid_request",
+    "network",
+  ]);
+
 function isFallbackEligibleBedrockError(error: unknown): boolean {
+  if (error instanceof BedrockRuntimeError) {
+    if (error.source !== "aws") {
+      return false;
+    }
+    return FALLBACK_ELIGIBLE_BEDROCK_KINDS.has(error.kind);
+  }
   if (error instanceof Error) {
     const msg = error.message.toLowerCase();
     return (
@@ -338,6 +364,23 @@ async function tryOpenRouter(
   };
 }
 
+async function tryLocal(
+  items: CorrelateEvidenceBatchItemInput[]
+): Promise<CorrelateEvidenceTextResultWithProvider> {
+  const result = correlateLocally(
+    items.map((item) => ({ evidenceId: item.evidenceId, text: item.text }))
+  );
+
+  return {
+    modelId: result.modelId,
+    durationMs: result.durationMs,
+    textLength: result.textLength,
+    analysis: result.analysis,
+    provider: "local",
+    providerMode: "fallback",
+  };
+}
+
 export async function correlateEvidenceWithFallback(
   items: CorrelateEvidenceBatchItemInput[]
 ): Promise<CorrelateEvidenceTextResultWithProvider> {
@@ -357,13 +400,10 @@ export async function correlateEvidenceWithFallback(
     try {
       return await tryOpenRouter(items);
     } catch {
-      if (bedrockError instanceof CorrelationServiceError) {
-        throw bedrockError;
-      }
-      throw new CorrelationServiceError(
-        "BEDROCK_REQUEST_FAILED",
-        "AI correlation failed. Try again."
-      );
+      // Deterministic last-resort fallback. Metadata honestly identifies the
+      // local provider as the source of this correlation; no Bedrock or
+      // OpenRouter success is ever claimed here.
+      return await tryLocal(items);
     }
   }
 }
