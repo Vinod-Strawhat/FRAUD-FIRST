@@ -1,0 +1,96 @@
+{
+  "Comment": "FraudFirst time-aware response orchestration. Guides the victim through a durable, ordered response plan. No external action (bank contact, 1930 contact, cybercrime report, freeze, recovery) is performed automatically: every step waits on an explicit SendTaskSuccess that only the app issues after the USER marks the action complete. Supports five response actions: preserve_evidence, contact_bank, contact_1930, report_cybercrime, follow_up.",
+  "StartAt": "INCIDENT_STARTED",
+  "States": {
+    "INCIDENT_STARTED": {
+      "Type": "Pass",
+      "Comment": "Workflow boundary. Input is safe incident metadata only (incidentId, startedAt, currentAction, amount, currency). No raw evidence, OCR text, credentials, or unnecessary PII is ever passed in.",
+      "Next": "PRESERVE_EVIDENCE"
+    },
+    "PRESERVE_EVIDENCE": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+      "Parameters": {
+        "FunctionName": "FraudFirstResponseBridge",
+        "Payload": {
+          "incidentId.$": "$.incidentId",
+          "actionType": "preserve_evidence",
+          "TaskToken.$": "$$.Task.Token"
+        }
+      },
+      "ResultPath": null,
+      "TimeoutSeconds": 1209600,
+      "Comment": "Action 1/5. Stays pending until the user explicitly marks 'Preserve evidence' complete in the app. The bridge Lambda forwards the task token to the single-table record so the app can SendTaskSuccess.",
+      "Next": "CONTACT_BANK"
+    },
+    "CONTACT_BANK": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+      "Parameters": {
+        "FunctionName": "FraudFirstResponseBridge",
+        "Payload": {
+          "incidentId.$": "$.incidentId",
+          "actionType": "contact_bank",
+          "TaskToken.$": "$$.Task.Token"
+        }
+      },
+      "ResultPath": null,
+      "TimeoutSeconds": 1209600,
+      "Comment": "Action 2/5. Pending human action - contacting the bank/payment provider. Never auto-completed.",
+      "Next": "CONTACT_1930"
+    },
+    "CONTACT_1930": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+      "Parameters": {
+        "FunctionName": "FraudFirstResponseBridge",
+        "Payload": {
+          "incidentId.$": "$.incidentId",
+          "actionType": "contact_1930",
+          "TaskToken.$": "$$.Task.Token"
+        }
+      },
+      "ResultPath": null,
+      "TimeoutSeconds": 1209600,
+      "Comment": "Action 3/5. Pending human action - contacting the national cybercrime helpline 1930. Never auto-completed.",
+      "Next": "REPORT_CYBERCRIME"
+    },
+    "REPORT_CYBERCRIME": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+      "Parameters": {
+        "FunctionName": "FraudFirstResponseBridge",
+        "Payload": {
+          "incidentId.$": "$.incidentId",
+          "actionType": "report_cybercrime",
+          "TaskToken.$": "$$.Task.Token"
+        }
+      },
+      "ResultPath": null,
+      "TimeoutSeconds": 1209600,
+      "Comment": "Action 4/5. Pending human action - filing a report through the official online cybercrime channel. Never auto-completed.",
+      "Next": "FOLLOW_UP"
+    },
+    "FOLLOW_UP": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+      "Parameters": {
+        "FunctionName": "FraudFirstResponseBridge",
+        "Payload": {
+          "incidentId.$": "$.incidentId",
+          "actionType": "follow_up",
+          "TaskToken.$": "$$.Task.Token"
+        }
+      },
+      "ResultPath": null,
+      "TimeoutSeconds": 1209600,
+      "Comment": "Action 5/5. Pending human action - continuing to monitor the case. Never auto-completed.",
+      "Next": "RESPONSE_COMPLETE"
+    },
+    "RESPONSE_COMPLETE": {
+      "Type": "Pass",
+      "Comment": "All five guided steps were explicitly marked complete by the user. The durable record that the victim finished the guided response plan.",
+      "End": true
+    }
+  }
+}

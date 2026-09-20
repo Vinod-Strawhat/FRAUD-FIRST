@@ -1,0 +1,125 @@
+
+> fraud-first@0.1.0 dev
+> next dev
+
+▲ Next.js 16.3.5 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.83.1:3000
+- Environments: .env.local
+✓ Ready in 679ms
+✓ Running next.config.ts took 60ms
+
+ GET / 200 in 1466ms (next.js: 662ms, application-code: 805ms)
+[EXTRACT-DIAG] extractWithFallback called { mimeType: 'image/png', bytesLength: 14900, awsConfigured: true }
+[EXTRACT-DIAG] Attempting Textract primary...
+[EXTRACT-DIAG] Textract failed {
+  errorName: 'SubscriptionRequiredException',
+  errorMessage: 'The AWS Access Key Id needs a subscription for the service',
+  fallbackEligible: true
+}
+[EXTRACT-DIAG] extractWithTesseractFallback {
+  mimeType: 'image/png',
+  tesseractSupported: true,
+  hasOriginalError: true
+}
+[EXTRACT-DIAG] Calling Tesseract OCR...
+[TESSERACT-DIAG] workerPath resolved {
+  workerPath: 'C:\\Users\\vinod\\FRAUD-FIRST\\node_modules\\tesseract.js\\src\\worker-script\\node\\index.js'
+}
+[TESSERACT-DIAG] Creating worker...
+[TESSERACT-DIAG] Worker created successfully
+[TESSERACT-DIAG] Starting recognition... { bufferSize: 14900 }
+[TESSERACT-DIAG] Recognition complete { textLength: 105, confidence: 93 }
+[EXTRACT-DIAG] Tesseract succeeded { textLength: 105, confidence: 93 }
+ POST /api/evidence/extract 200 in 2.6s (next.js: 201ms, application-code: 2.4s)
+ GET / 200 in 200ms (next.js: 21ms, application-code: 178ms)
+ GET /incident/FF-20260920-HDKB 200 in 765ms (next.js: 707ms, application-code: 58ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /api/incidents/FF-20260920-HDKB 404 in 1770ms (next.js: 1016ms, application-code: 754ms)
+ GET /api/incidents/FF-20260920-HDKB/response 404 in 1756ms (next.js: 1046ms, application-code: 711ms)
+ GET /api/incidents/FF-20260920-HDKB/intelligence 404 in 1760ms (next.js: 1088ms, application-code: 672ms)
+ GET /api/incidents/FF-20260920-HDKB/package 404 in 1826ms (next.js: 1133ms, application-code: 693ms)
+ GET /api/incidents/FF-20260920-HDKB 404 in 307ms (next.js: 67ms, application-code: 240ms)
+ GET /api/incidents/FF-20260920-HDKB/response 404 in 287ms (next.js: 50ms, application-code: 237ms)
+ GET /api/incidents/FF-20260920-HDKB 404 in 227ms (next.js: 5ms, application-code: 221ms)
+ GET /api/incidents/FF-20260920-HDKB 404 in 237ms (next.js: 6ms, application-code: 231ms)
+ PUT /api/incidents/FF-20260920-HDKB 200 in 458ms (next.js: 7ms, application-code: 451ms)
+ POST /api/incidents/FF-20260920-HDKB/response/start 200 in 3.6s (next.js: 875ms, application-code: 2.7s)
+ GET /api/incidents/FF-20260920-HDKB/intelligence 200 in 264ms (next.js: 44ms, application-code: 221ms)
+ GET /api/incidents/FF-20260920-HDKB/package 200 in 313ms (next.js: 90ms, application-code: 223ms)
+ PUT /api/incidents/FF-20260920-HDKB 200 in 525ms (next.js: 70ms, application-code: 455ms)
+[EXTRACT-DIAG] extractWithFallback called { mimeType: 'image/png', bytesLength: 1595711, awsConfigured: true }
+[EXTRACT-DIAG] Attempting Textract primary...
+ PUT /api/incidents/FF-20260920-HDKB 200 in 508ms (next.js: 50ms, application-code: 459ms)
+[EXTRACT-DIAG] Textract failed {
+  errorName: 'SubscriptionRequiredException',
+  errorMessage: 'The AWS Access Key Id needs a subscription for the service',
+  fallbackEligible: true
+}
+[EXTRACT-DIAG] extractWithTesseractFallback {
+  mimeType: 'image/png',
+  tesseractSupported: true,
+  hasOriginalError: true
+}
+[EXTRACT-DIAG] Calling Tesseract OCR...
+[TESSERACT-DIAG] workerPath resolved {
+  workerPath: 'C:\\Users\\vinod\\FRAUD-FIRST\\node_modules\\tesseract.js\\src\\worker-script\\node\\index.js'
+}
+[TESSERACT-DIAG] Creating worker...
+[TESSERACT-DIAG] Worker created successfully
+[TESSERACT-DIAG] Starting recognition... { bufferSize: 1595711 }
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 502ms (next.js: 41ms, application-code: 460ms)
+[TESSERACT-DIAG] Recognition complete { textLength: 504, confidence: 81 }
+[EXTRACT-DIAG] Tesseract succeeded { textLength: 504, confidence: 81 }
+ POST /api/evidence/extract 200 in 4.6s (next.js: 3ms, application-code: 4.6s)
+ PUT /api/incidents/FF-20260920-HDKB 400 in 55ms (next.js: 46ms, application-code: 9ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 508ms (next.js: 64ms, application-code: 444ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 520ms (next.js: 70ms, application-code: 450ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 541ms (next.js: 95ms, application-code: 446ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 529ms (next.js: 84ms, application-code: 444ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 551ms (next.js: 102ms, application-code: 449ms)
+ PUT /api/incidents/FF-20260920-HDKB 400 in 58ms (next.js: 47ms, application-code: 11ms)
+ POST /api/evidence/upload 200 in 2.7s (next.js: 62ms, application-code: 2.6s)
+ PUT /api/incidents/FF-20260920-HDKB 400 in 53ms (next.js: 45ms, application-code: 8ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 476ms (next.js: 27ms, application-code: 448ms)
+ PUT /api/incidents/FF-20260920-HDKB 400 in 106ms (next.js: 94ms, application-code: 12ms)
+ POST /api/evidence/correlate 502 in 872ms (next.js: 62ms, application-code: 809ms)
+ PUT /api/incidents/FF-20260920-HDKB 400 in 17ms (next.js: 4ms, application-code: 14ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 520ms (next.js: 51ms, application-code: 469ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 544ms (next.js: 89ms, application-code: 455ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 559ms (next.js: 95ms, application-code: 464ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 540ms (next.js: 96ms, application-code: 444ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 527ms (next.js: 82ms, application-code: 445ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 549ms (next.js: 92ms, application-code: 457ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 535ms (next.js: 85ms, application-code: 450ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 547ms (next.js: 94ms, application-code: 454ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 538ms (next.js: 81ms, application-code: 457ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 502ms (next.js: 52ms, application-code: 450ms)
+ POST /api/incidents/FF-20260920-HDKB/response/actions/resp_preserve_evidence/complete 200 in 3.0s (next.js: 841ms, application-code: 2.2s)
+ PUT /api/incidents/FF-20260920-HDKB 400 in 69ms (next.js: 59ms, application-code: 10ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 506ms (next.js: 46ms, application-code: 459ms)
+ POST /api/incidents/FF-20260920-HDKB/response/actions/resp_contact_bank/complete 200 in 2.3s (next.js: 48ms, application-code: 2.2s)
+ PUT /api/incidents/FF-20260920-HDKB 400 in 55ms (next.js: 44ms, application-code: 11ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 493ms (next.js: 44ms, application-code: 449ms)
+ POST /api/incidents/FF-20260920-HDKB/response/actions/resp_contact_1930/complete 200 in 2.3s (next.js: 101ms, application-code: 2.2s)
+ PUT /api/incidents/FF-20260920-HDKB 400 in 52ms (next.js: 43ms, application-code: 9ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 503ms (next.js: 42ms, application-code: 461ms)
+ POST /api/incidents/FF-20260920-HDKB/response/actions/resp_report_cybercrime/complete 200 in 2.1s (next.js: 101ms, application-code: 1974ms)
+ PUT /api/incidents/FF-20260920-HDKB 400 in 54ms (next.js: 47ms, application-code: 7ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 488ms (next.js: 43ms, application-code: 445ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 547ms (next.js: 99ms, application-code: 449ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 546ms (next.js: 92ms, application-code: 454ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 547ms (next.js: 90ms, application-code: 457ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 559ms (next.js: 86ms, application-code: 473ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 547ms (next.js: 85ms, application-code: 462ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 569ms (next.js: 97ms, application-code: 472ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 534ms (next.js: 82ms, application-code: 452ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 1232ms (next.js: 88ms, application-code: 1143ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 545ms (next.js: 83ms, application-code: 462ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 534ms (next.js: 84ms, application-code: 450ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 559ms (next.js: 84ms, application-code: 475ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 555ms (next.js: 100ms, application-code: 455ms)
+ GET /api/incidents/FF-20260920-HDKB/response 200 in 496ms (next.js: 46ms, application-code: 450ms)
+  Reload env: .env.local
+  Reload env: .env.local
+  Reload env: .env.local

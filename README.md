@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FraudFirst
 
-## Getting Started
+The incident-response layer for people who just got scammed.
 
-First, run the development server:
+Users start an incident, collect evidence, extract facts, correlate evidence, build a timeline, preserve evidence, get guided response, and receive a clean incident package. FraudFirst supplements — and never replaces — banks, the police, India's 1930 cyber-fraud helpline, and the National Cyber Crime Reporting Portal.
+
+> Foundation build (v0.1.0). The full workflow, evidence system, and AWS services are added in later tasks.
+
+## Tech Stack
+
+- **Next.js 16** (App Router, React 19, Turbopack)
+- **TypeScript**
+- **Tailwind CSS v4**
+- **shadcn/ui-style primitives** (Radix Slot, CVA, tailwind-merge, clsx)
+- **Lucide** icons
+- **Framer Motion** animations
+
+## Local Setup
+
+```bash
+npm install
+```
+
+Copy the example environment file (optional in development):
+
+```bash
+copy .env.example .env.local
+```
+
+## Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+```
 
-## Learn More
+## Lint
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run lint
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Test
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+No test framework is configured yet.
 
-## Deploy on Vercel
+## Health Check
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Application status endpoint:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+curl http://localhost:3000/api/health
+```
+
+## Project Structure
+
+```
+src/
+  app/          routes, layouts, API route handlers
+  components/   shared React components (ui primitives in components/ui)
+  config/       site + environment configuration
+  hooks/        shared React hooks
+  lib/          utilities
+  services/     service-layer abstractions (incidents, evidence, intelligence)
+  types/        shared domain types
+```
+
+## AWS Services
+
+Not yet integrated. The `services/` layer is designed so AWS-backed
+implementations can replace the current in-memory placeholders without
+changes to call sites.
